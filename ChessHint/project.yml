@@ -1,0 +1,39 @@
+#
+#  ChessHint — XcodeGen project spec
+#  Генерация: brew install xcodegen && xcodegen generate
+#
+name: ChessHint
+options:
+  bundleIdPrefix: com.chesshint
+  deploymentTarget:
+    iOS: "16.0"
+  createIntermediateGroups: true
+
+targets:
+  ChessHint:
+    type: application
+    platform: iOS
+    sources:
+      - path: ChessHint
+      - path: StockfishSrc
+        excludes:
+          - "main.cpp"        # там свой main() — конфликтует со SwiftUI-приложением
+    settings:
+      base:
+        SWIFT_OBJC_BRIDGING_HEADER: ChessHint/Engine/StockfishBridge.h
+        PRODUCT_BUNDLE_IDENTIFIER: com.chesshint.app
+        TARGETED_DEVICE_FAMILY: "1"
+        CLANG_CXX_LANGUAGE_STANDARD: c++20
+        GCC_OPTIMIZATION_LEVEL: "3"
+        SWIFT_OPTIMIZATION_LEVEL: "-O"
+        # NDEBUG — релизная сборка; USE_NEON=8 — SIMD-ускорение NNUE на ARM iPhone
+        OTHER_CFLAGS: "$(inherited) -DNDEBUG -DUSE_NEON=8"
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+
+schemes:
+  ChessHint:
+    build:
+      targets:
+        ChessHint: release
+    run:
+      config: Release
